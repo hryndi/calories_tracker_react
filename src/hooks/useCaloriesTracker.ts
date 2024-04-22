@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CardTypes } from "../types";
 import { v4 as uuid } from "uuid";
 
@@ -72,6 +72,47 @@ export const useCaloriesTracker = () => {
     return CARD_VALUES.reduce((acc, obj) => acc + obj[value] * obj.quantity, 0);
   };
 
+  const inputMap: Array<React.InputHTMLAttributes<HTMLInputElement>> = useMemo(
+    () => [
+      {
+        id: "Name",
+        placeholder: "Name",
+        value: itemName,
+        onChange: (e) => setItemName(e.target.value),
+        type: "text",
+      },
+      {
+        id: "Name",
+        placeholder: "Name",
+        value: itemName,
+        onChange: (e) => setItemName(e.target.value),
+        type: "text",
+      },
+      {
+        id: "Name",
+        placeholder: "Name",
+        value: itemName,
+        onChange: (e) => setItemName(e.target.value),
+        type: "text",
+      },
+      {
+        id: "Name",
+        placeholder: "Name",
+        value: itemName,
+        onChange: (e) => setItemName(e.target.value),
+        type: "text",
+      },
+      {
+        id: "Name",
+        placeholder: "Name",
+        value: itemName,
+        onChange: (e) => setItemName(e.target.value),
+        type: "text",
+      },
+    ],
+    [itemName]
+  );
+
   return {
     setItemName,
     setProteinVal,
@@ -84,5 +125,6 @@ export const useCaloriesTracker = () => {
     totalHandler,
     editHandler,
     clearAllHandler,
+    inputMap,
   };
 };

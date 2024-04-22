@@ -8,29 +8,11 @@ const Main = styled.main``;
 const Header = styled.h1``;
 
 function App() {
-  const {
-    setItemName,
-    setProteinVal,
-    setFatVal,
-    setCaloriesVal,
-    setCarbsVal,
-    setQuantityVal,
-    submitHandler,
-    calculateHandler,
-    totalHandler,
-    editHandler,
-    clearAllHandler,
-  } = useCaloriesTracker();
+  const { inputMap } = useCaloriesTracker();
   return (
     <Main>
       <Header>Dima`s Nutrion Meter</Header>
-      <Forms
-        itemName={setItemName}
-        caloriesVal={setCaloriesVal}
-        carbsVal={setCarbsVal}
-        fatVal={setFatVal}
-        proteinVal={setProteinVal}
-      />
+      <Forms itemMap={inputMap} />
 
       <Button />
       <Button />
