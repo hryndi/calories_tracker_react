@@ -11,6 +11,7 @@ export const useCaloriesTracker = () => {
   const [caloriesVal, setCaloriesVal] = useState(0);
   const [carbsVal, setCarbsVal] = useState(0);
   const [quantityVal, setQuantityVal] = useState(0);
+  const [isEditMode, setIsEditmode] = useState();
 
   const submitHandler = () => {
     CARD_VALUES.push({
@@ -43,6 +44,9 @@ export const useCaloriesTracker = () => {
         break;
     }
   };
+  const clearAllHandler = () => {
+    CARD_VALUES = [];
+  };
 
   const editHandler = (id: string) => {
     CARD_VALUES.push({
@@ -56,6 +60,18 @@ export const useCaloriesTracker = () => {
     });
   };
 
+  interface CardValue {
+    quantity?: number;
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+  }
+
+  const totalHandler = <T extends keyof CardValue>(value: T): number => {
+    return CARD_VALUES.reduce((acc, obj) => acc + obj[value] * obj.quantity, 0);
+  };
+
   return {
     setItemName,
     setProteinVal,
@@ -65,5 +81,8 @@ export const useCaloriesTracker = () => {
     setQuantityVal,
     submitHandler,
     calculateHandler,
+    totalHandler,
+    editHandler,
+    clearAllHandler,
   };
 };
