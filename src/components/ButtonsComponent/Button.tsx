@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 
-const ButtonStyled = styled.button``;
-
-const Button = () => {
-  return <ButtonStyled>children</ButtonStyled>;
-};
+const Button = styled.button`
+  border-radius: 10px;
+  border: 0;
+  padding: 0.5rem;
+`;
 
 export default Button;

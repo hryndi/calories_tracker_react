@@ -7,3 +7,11 @@ export type CardTypes = {
   quantity: number;
   id: string;
 };
+
+export interface CardValue {
+  quantity?: number;
+  calories?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+}

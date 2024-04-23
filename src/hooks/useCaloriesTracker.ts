@@ -1,130 +1,191 @@
-import { useMemo, useState } from "react";
-import { CardTypes } from "../types";
+import {
+  InputHTMLAttributes,
+  KeyboardEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { CardTypes, CardValue } from "../types";
 import { v4 as uuid } from "uuid";
 
-export let CARD_VALUES: CardTypes[] = [];
-
 export const useCaloriesTracker = () => {
+  const [cardValues, setCardValues] = useState<CardTypes[]>([]);
+
   const [itemName, setItemName] = useState("");
   const [proteinVal, setProteinVal] = useState(0);
   const [fatVal, setFatVal] = useState(0);
   const [caloriesVal, setCaloriesVal] = useState(0);
   const [carbsVal, setCarbsVal] = useState(0);
-  const [quantityVal, setQuantityVal] = useState(0);
-  const [isEditMode, setIsEditmode] = useState();
+  const quantityVal: number = 1;
+  const [cardId, setCardId] = useState("");
+  // const [isEditMode, setIsEditmode] = useState();
 
   const submitHandler = () => {
-    CARD_VALUES.push({
-      item_name: itemName,
-      protein: proteinVal,
-      fat: fatVal,
-      calories: caloriesVal,
-      carbs: carbsVal,
-      quantity: quantityVal,
-      id: uuid(),
-    });
+    setCardValues((prevState) => [
+      ...prevState,
+      {
+        item_name: itemName,
+        protein: proteinVal,
+        fat: fatVal,
+        calories: caloriesVal,
+        carbs: carbsVal,
+        quantity: quantityVal,
+        id: uuid(),
+      },
+    ]);
+  };
+
+  const saveHandler = () => {
+    if (!cardId) return;
+    setCardValues((prevState) => [
+      ...prevState.map((item) =>
+        item.id !== cardId
+          ? item
+          : {
+              ...item,
+              calories: caloriesVal,
+              carbs: carbsVal,
+              fat: fatVal,
+              item_name: itemName,
+              protein: proteinVal,
+              quantity: quantityVal,
+            }
+      ),
+    ]);
+    setCardId(() => "");
   };
 
   const deleteHandler = (id: string) => {
-    const updatedCardValues = CARD_VALUES.filter((card) => card.id !== id);
-    CARD_VALUES = updatedCardValues;
+    const updatedCardValues = cardValues.filter((card) => card.id !== id);
+    setCardValues(updatedCardValues);
   };
 
-  const calculateHandler = (action: string, id: string) => {
+  const calculateHandler = useCallback((action: string, id: string) => {
     switch (action) {
       case "increace":
-        setQuantityVal((prevVal) => prevVal + 1);
+        setCardValues((prevState) => [
+          ...prevState.map((item) =>
+            item.id !== id
+              ? item
+              : {
+                  ...item,
+                  quantity: item.quantity + 1,
+                }
+          ),
+        ]);
         break;
 
       case "decreace":
-        setQuantityVal((prevVal) => prevVal - 1);
-        if (quantityVal <= 0) {
-          deleteHandler(id);
-        }
+        setCardValues((prevState): CardTypes[] =>
+          prevState.reduce((accItems, currItem): CardTypes[] => {
+            if (currItem.id !== id) return [...accItems, currItem];
+            if (currItem.quantity - 1 === 0) return accItems;
+            return [
+              ...accItems,
+              {
+                ...currItem,
+                quantity: currItem.quantity - 1,
+              },
+            ];
+          }, [] as CardTypes[])
+        );
         break;
     }
-  };
+  }, []);
+
   const clearAllHandler = () => {
-    CARD_VALUES = [];
+    setCardValues([]);
   };
-
-  const editHandler = (id: string) => {
-    CARD_VALUES.push({
-      item_name: itemName,
-      protein: proteinVal,
-      fat: fatVal,
-      calories: caloriesVal,
-      carbs: carbsVal,
-      quantity: quantityVal,
-      id: id,
-    });
-  };
-
-  interface CardValue {
-    quantity?: number;
-    calories?: number;
-    protein?: number;
-    carbs?: number;
-    fat?: number;
-  }
 
   const totalHandler = <T extends keyof CardValue>(value: T): number => {
-    return CARD_VALUES.reduce((acc, obj) => acc + obj[value] * obj.quantity, 0);
+    return cardValues.reduce((acc, obj) => acc + obj[value] * obj.quantity, 0);
   };
 
-  const inputMap: Array<React.InputHTMLAttributes<HTMLInputElement>> = useMemo(
+  const inputMap: Array<
+    InputHTMLAttributes<HTMLInputElement> & {
+      onKeyDown?: KeyboardEventHandler<HTMLDivElement>;
+    }
+  > = useMemo(
     () => [
       {
-        id: "Name",
+        id: "name",
         placeholder: "Name",
         value: itemName,
         onChange: (e) => setItemName(e.target.value),
         type: "text",
       },
       {
-        id: "Name",
-        placeholder: "Name",
-        value: itemName,
-        onChange: (e) => setItemName(e.target.value),
-        type: "text",
+        id: "protein",
+        placeholder: "PRotein (g)",
+        value: proteinVal > 0 ? proteinVal : "",
+        onChange: (e) => setProteinVal(e.target.valueAsNumber),
+        type: "number",
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
       {
-        id: "Name",
-        placeholder: "Name",
-        value: itemName,
-        onChange: (e) => setItemName(e.target.value),
-        type: "text",
+        id: "fat",
+        placeholder: "Fat (g)",
+        value: fatVal > 0 ? fatVal : "",
+        onChange: (e) => setFatVal(e.target.valueAsNumber),
+        type: "number",
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
       {
-        id: "Name",
-        placeholder: "Name",
-        value: itemName,
-        onChange: (e) => setItemName(e.target.value),
-        type: "text",
+        id: "calories",
+        placeholder: "Calories",
+        value: caloriesVal > 0 ? caloriesVal : "",
+        onChange: (e) => setCaloriesVal(e.target.valueAsNumber),
+        type: "number",
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
       {
-        id: "Name",
-        placeholder: "Name",
-        value: itemName,
-        onChange: (e) => setItemName(e.target.value),
-        type: "text",
+        id: "carbs",
+        placeholder: "Carbs (g)",
+        value: carbsVal > 0 ? carbsVal : "",
+        onChange: (e) => setCarbsVal(e.target.valueAsNumber),
+        type: "number",
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
     ],
-    [itemName]
+    [itemName, caloriesVal, carbsVal, fatVal, proteinVal]
   );
 
+  const editHandler = useCallback(
+    (id: string) => {
+      const itemToEdit = cardValues.find((item) => item.id === id);
+
+      if (!itemToEdit) return;
+
+      setProteinVal(itemToEdit.protein);
+      setFatVal(itemToEdit.fat);
+      setCaloriesVal(itemToEdit.calories);
+      setCarbsVal(itemToEdit.carbs);
+      setItemName(itemToEdit.item_name);
+      setCardId(itemToEdit.id);
+    },
+    [cardValues]
+  );
+
+  const cards = useMemo(() => cardValues, [cardValues]);
+
+  useEffect(() => {
+    console.log("cards, cards", cards);
+  }, [cards]);
+
   return {
-    setItemName,
-    setProteinVal,
-    setFatVal,
-    setCaloriesVal,
-    setCarbsVal,
-    setQuantityVal,
     submitHandler,
+    saveHandler,
     calculateHandler,
     totalHandler,
     editHandler,
     clearAllHandler,
+    deleteHandler,
     inputMap,
+    cardValues: cards,
   };
 };
