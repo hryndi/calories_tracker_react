@@ -12,6 +12,11 @@ body {
   line-height: 1.2;
   -webkit-font-smoothing: antialiased;
   font-family: "Roboto", sans-serif;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  background-color: rgb(114, 213, 180);
 }
 
 img,
