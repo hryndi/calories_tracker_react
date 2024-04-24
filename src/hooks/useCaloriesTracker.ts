@@ -1,4 +1,11 @@
-import { InputHTMLAttributes, KeyboardEventHandler, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  InputHTMLAttributes,
+  KeyboardEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { CardTypes, CardValue } from "../types";
 import { v4 as uuid } from "uuid";
 
@@ -15,6 +22,10 @@ export const useCaloriesTracker = () => {
   const [isEditMode, setIsEditmode] = useState(false);
 
   const submitHandler = () => {
+    if (itemName === "") {
+      window.alert("Please, give item a correct name");
+      return;
+    }
     setCardValues((prevState) => [
       ...prevState,
       {
@@ -31,6 +42,10 @@ export const useCaloriesTracker = () => {
 
   const saveHandler = () => {
     if (!cardId) return;
+    if (itemName === "") {
+      window.alert("Please, give item a correct name");
+      return;
+    }
     setCardValues((prevState) => [
       ...prevState.map((item) =>
         item.id !== cardId
@@ -115,7 +130,8 @@ export const useCaloriesTracker = () => {
         value: proteinVal > 0 ? proteinVal : "",
         onChange: (e) => setProteinVal(e.target.valueAsNumber),
         type: "number",
-        onKeyDown: (evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
       {
         id: "fat",
@@ -123,7 +139,8 @@ export const useCaloriesTracker = () => {
         value: fatVal > 0 ? fatVal : "",
         onChange: (e) => setFatVal(e.target.valueAsNumber),
         type: "number",
-        onKeyDown: (evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
       {
         id: "calories",
@@ -131,7 +148,8 @@ export const useCaloriesTracker = () => {
         value: caloriesVal > 0 ? caloriesVal : "",
         onChange: (e) => setCaloriesVal(e.target.valueAsNumber),
         type: "number",
-        onKeyDown: (evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
       {
         id: "carbs",
@@ -139,7 +157,8 @@ export const useCaloriesTracker = () => {
         value: carbsVal > 0 ? carbsVal : "",
         onChange: (e) => setCarbsVal(e.target.valueAsNumber),
         type: "number",
-        onKeyDown: (evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
+        onKeyDown: (evt) =>
+          ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault(),
       },
     ],
     [itemName, caloriesVal, carbsVal, fatVal, proteinVal]
@@ -148,7 +167,6 @@ export const useCaloriesTracker = () => {
   const editHandler = useCallback(
     (id: string) => {
       const itemToEdit = cardValues.find((item) => item.id === id);
-
       if (!itemToEdit) return;
 
       setProteinVal(itemToEdit.protein);

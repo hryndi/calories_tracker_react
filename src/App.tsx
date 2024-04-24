@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import Forms from "./components/FormsComponent/Forms";
 import Button from "./components/ButtonsComponent/Button";
+import BtnsWrapp from "./components/ButtonsComponent/BtnsWrapp";
 import Card from "./components/CardComponent/Card";
 import Summary from "./components/SummaryComponent/Summary";
 import { useCaloriesTracker } from "./hooks/useCaloriesTracker";
@@ -21,12 +22,6 @@ const Main = styled.main`
 const Header = styled.h1`
   margin: 1rem;
 `;
-const BtnWrapp = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 1rem;
-  padding-inline: 1rem;
-`;
 
 function App() {
   const {
@@ -46,21 +41,30 @@ function App() {
       <Header>Dima`s Nutrion Meter</Header>
       <Forms itemMap={inputMap} />
 
-      <BtnWrapp>
+      <BtnsWrapp>
         {!isEditMode ? (
-          <Button className="width-100 green" onClick={submitHandler}>
+          <Button
+            className="width-100 green group-children"
+            onClick={submitHandler}
+          >
             Add item
           </Button>
         ) : (
-          <Button className="width-100 green" onClick={saveHandler}>
+          <Button
+            className="width-100 green group-children"
+            onClick={saveHandler}
+          >
             Save
           </Button>
         )}
 
-        <Button className="width-100 red" onClick={clearAllHandler}>
+        <Button
+          className="width-100 red group-children"
+          onClick={clearAllHandler}
+        >
           Clear All
         </Button>
-      </BtnWrapp>
+      </BtnsWrapp>
       <Card
         plusMinusHandler={calculateHandler}
         cardValues={cardValues}
